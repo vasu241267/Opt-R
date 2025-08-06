@@ -131,8 +131,7 @@ def fetch_otp_loop():
 
                     # Log full details to file
                     log_formatted = (
-                        f"📅 Date:        {time_}\n"
-                        f"🌐 Operator:    {operator}\n"
+                        
                         f"📱 Number:      {number}\n"
                         f"🏷️ Sender ID:   {sender}\n"
                         f"💬 Message:     {message}\n"
@@ -167,4 +166,4 @@ if __name__ == '__main__':
     otp_thread.start()
     
     # Start the Flask web server
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=8080)
