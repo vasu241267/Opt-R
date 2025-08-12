@@ -128,7 +128,7 @@ def otp_monitor_acchubb():
             otp_code = otp_entry.get("otp", "").strip()
             if otp_code and otp_id not in sent_ids:
                 sent_ids.add(otp_id)
-                import html
+            
 
                 msg = (
     "━━━━━━━━━━━━━━━━━━━━━━\n"
