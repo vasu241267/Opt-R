@@ -119,14 +119,19 @@ def otp_monitor_acchubb():
             if otp_code and otp_id not in sent_ids:
                 sent_ids.add(otp_id)
                 msg = (
-                    f"🔔 <b>OTP Received</b>\n\n"
-                    f"📞 <b>Number:</b> <code>{otp_entry.get('did')}</code>\n"
-                    f"🌍 <b>Country:</b> {otp_entry.get('country_name')}\n"
-                    f"🔑 <b>OTP:</b> <code>{otp_code}</code>\n"
-                    f"🕒 <b>Time:</b> {otp_entry.get('created')}\n"
-                    f"{'─'*30}\n"
-                    f"<i>Powered by your bot ❤️</i>"
-                )
+    "━━━━━━━━━━━━━━━\n"
+    "💌 <b><u>OTP ALERT</u></b> 💌\n"
+    "━━━━━━━━━━━━━━━\n\n"
+    f"📞 <b>Number:</b> <code>{otp_entry.get('did')}</code>\n"
+    f"🌍 <b>Country:</b> {otp_entry.get('country_name')}</code>\n"
+    f"🕒 <b>Received:</b> {otp_entry.get('created')}\n"
+    "━━━━━━━━━━━━━━━\n"               
+    f"🔑 <b>OTP Code:</b> <code>{otp_code}</code>\n"
+    "━━━━━━━━━━━━━━━\n"
+    "⚡ <i>Powered by V ❤️</i>\n"
+    "━━━━━━━━━━━━━━━"
+)
+
                 send_telegram_message(msg)
         time.sleep(FETCH_INTERVAL)
     # Continuous loop
@@ -196,20 +201,28 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_text("🚚 Select a carrier:", reply_markup=InlineKeyboardMarkup(keyboard))
 
     elif action == "carrier":
-        app_id, carrier_id = value.split("|", 1)
-        res = add_number(app_id, carrier_id)
-        if res.get("meta") == 200 and "data" in res:
-            data = res["data"]
-            msg = (
-                f"✅ <b>Number Added Successfully!</b>\n"
-                f"\n"
-                f"📞 Number: <code>{data.get('did')}</code>"
-                f"\n"
-            )
-            await query.edit_message_text(msg, parse_mode="HTML")
-        else:
-            await query.edit_message_text("❌ Failed to add number.\n" + str(res))
+    app_id, carrier_id = value.split("|", 1)
+    res = add_number(app_id, carrier_id)
+    if res.get("meta") == 200 and "data" in res:
+        data = res["data"]
 
+        msg = (
+            f"✅ <b>Number Added Successfully!</b>\n\n"
+            f"📞 <b>Number:</b> <code>{data.get('did')}</code>\n"
+            f"<i>Powered by V ❤️</i>"
+        )
+
+        # Inline button "Get SMS Here"
+        keyboard = [
+            [InlineKeyboardButton("📩 Get SMS Here", url="https://t.me/+bzv2oFwslWI3Y2I1")]
+            [InlineKeyboardButton("📩 Main Channel", url="https://t.me/ddxotp")]
+            
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+        await query.edit_message_text(msg, parse_mode="HTML", reply_markup=reply_markup)
+    else:
+        await query.edit_message_text("❌ Failed to add number.\n" + str(res))
 # =========================================
 # ====== Main start functions ============
 # =========================================
