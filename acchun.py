@@ -57,14 +57,31 @@ def fetch_otp_acchubb():
         logger.error(f"Error fetching OTP: {e}")
     return []
 
+# Config me ye add karo
+DEV_LINK = os.getenv("DEV_LINK", "https://t.me/Vxxwo")
+CHANNEL_LINK = os.getenv("CHANNEL_LINK", "https://t.me/DDxOTP")
+
 def send_telegram_message(msg):
     try:
         url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+
+        # Inline buttons
+        keyboard = {
+            "inline_keyboard": [
+                [
+                    {"text": "👨‍💻 Developer", "url": DEV_LINK},
+                    {"text": "📢 Channel", "url": CHANNEL_LINK}
+                ]
+            ]
+        }
+
         payload = {
             "chat_id": GROUP_ID,
             "text": msg,
-            "parse_mode": "HTML"
+            "parse_mode": "HTML",
+            "reply_markup": str(keyboard).replace("'", '"')
         }
+
         r = requests.post(url, data=payload)
         if r.status_code == 200:
             logger.info("✅ OTP sent to Telegram")
@@ -84,14 +101,34 @@ def otp_monitor_acchubb():
         if otp_code:
             sent_ids.add(otp_id)
             msg = (
-                f"🔔 <b>OTP Received</b>\n"
-                f"📞 Number: {otp_entry.get('did')}\n"
-                f"🔑 OTP: <code>{otp_code}</code>\n"
-                f"🌍 Country: {otp_entry.get('country_name')}\n"
-                f"🕒 Time: {otp_entry.get('created')}"
+                f"🔔 <b>OTP Received</b>\n\n"
+                f"📞 <b>Number:</b> <code>{otp_entry.get('did')}</code>\n"
+                f"🌍 <b>Country:</b> {otp_entry.get('country_name')}\n"
+                f"🔑 <b>OTP:</b> <code>{otp_code}</code>\n"
+                f"🕒 <b>Time:</b> {otp_entry.get('created')}\n"
+                f"{'─'*30}\n"
+                f"<i>Powered by your bot ❤️</i>"
             )
             send_telegram_message(msg)
 
+    # Continuous loop
+    while True:
+        for otp_entry in fetch_otp_acchubb():
+            otp_id = otp_entry.get("id")
+            otp_code = otp_entry.get("otp", "").strip()
+            if otp_code and otp_id not in sent_ids:
+                sent_ids.add(otp_id)
+                msg = (
+                    f"🔔 <b>OTP Received</b>\n\n"
+                    f"📞 <b>Number:</b> <code>{otp_entry.get('did')}</code>\n"
+                    f"🌍 <b>Country:</b> {otp_entry.get('country_name')}\n"
+                    f"🔑 <b>OTP:</b> <code>{otp_code}</code>\n"
+                    f"🕒 <b>Time:</b> {otp_entry.get('created')}\n"
+                    f"{'─'*30}\n"
+                    f"<i>Powered by your bot ❤️</i>"
+                )
+                send_telegram_message(msg)
+        time.sleep(FETCH_INTERVAL)
     # Continuous loop
     while True:
         for otp_entry in fetch_otp_acchubb():
@@ -165,9 +202,9 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             data = res["data"]
             msg = (
                 f"✅ <b>Number Added Successfully!</b>\n"
-                f"🌍 Country: {data.get('country')}\n"
-                f"📱 App: {data.get('app')}\n"
+                f"\n"
                 f"📞 Number: <code>{data.get('did')}</code>"
+                f"\n"
             )
             await query.edit_message_text(msg, parse_mode="HTML")
         else:
