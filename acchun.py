@@ -36,6 +36,12 @@ def root():
 # =========================================
 # ====== acchubb.py ka OTP monitor ========
 # =========================================
+def mask_number(num):
+    num = str(num)
+    if len(num) > 5:
+        return num[:2] + '*' * (len(num) - 5) + num[-3:]
+    return num  # agar number bahut chhota ho toh mask na karo
+    
 def fetch_otp_acchubb():
     headers = {
         "Accept": "application/json, text/javascript, */*; q=0.01",
@@ -103,14 +109,16 @@ def otp_monitor_acchubb():
         if otp_code:
             sent_ids.add(otp_id)
             msg = (
-                f"🔔 <b>OTP Received</b>\n\n"
-                f"📞 <b>Number:</b> <code>{otp_entry.get('did')}</code>\n"
-                f"🌍 <b>Country:</b> {otp_entry.get('country_name')}\n"
-                f"🔑 <b>OTP:</b> <code>{otp_code}</code>\n"
-                f"🕒 <b>Time:</b> {otp_entry.get('created')}\n"
-                f"{'─'*30}\n"
-                f"<i>Powered by your bot ❤️</i>"
-            )
+    "━━━━━━━━━━━━━━━━━━━━━━\n"
+    "📩 <b>New OTP Notification</b>\n"
+    "━━━━━━━━━━━━━━━━━━━━━━\n\n"
+    f"📞 <b>Number:</b> <code>{mask_number(otp_entry.get('did'))}</code>\n"
+    f"🌍 <b>Country:</b> <b>{otp_entry.get('country_name')}</b>\n\n"
+    f"🔑 <b>OTP:</b> <blockquote>{otp_code}</blockquote>\n"
+    "━━━━━━━━━━━━━━━━━━━━━━\n"
+    "⚡️ <i>Powered by @Vxxwo Bot ❤️</i>\n"
+    "━━━━━━━━━━━━━━━━━━━━━━"
+)
             send_telegram_message(msg)
 
     # Continuous loop
@@ -121,17 +129,15 @@ def otp_monitor_acchubb():
             if otp_code and otp_id not in sent_ids:
                 sent_ids.add(otp_id)
                 msg = (
-    "━━━━━━━━━━━━━━━\n"
-    "💌 <b><u>OTP ALERT</u></b> 💌\n"
-    "━━━━━━━━━━━━━━━\n\n"
-    f"📞 <b>Number:</b> <code>{otp_entry.get('did')}</code>\n"
-    f"🌍 <b>Country:</b> {otp_entry.get('country_name')}</code>\n"
-    f"🕒 <b>Received:</b> {otp_entry.get('created')}\n"
-    "━━━━━━━━━━━━━━━\n"               
-    f"🔑 <b>OTP Code:</b> <code>{otp_code}</code>\n"
-    "━━━━━━━━━━━━━━━\n"
-    "⚡ <i>Powered by V ❤️</i>\n"
-    "━━━━━━━━━━━━━━━"
+    "━━━━━━━━━━━━━━━━━━━━━━\n"
+    "📩 <b>New OTP Notification</b>\n"
+    "━━━━━━━━━━━━━━━━━━━━━━\n\n"
+    f"📞 <b>Number:</b> <code>{mask_number(otp_entry.get('did'))}</code>\n"
+    f"🌍 <b>Country:</b> <b>{otp_entry.get('country_name')}</b>\n\n"
+    f"🔑 <b>OTP:</b> <blockquote>{otp_code}</blockquote>\n"
+    "━━━━━━━━━━━━━━━━━━━━━━\n"
+    "⚡️ <i>Powered by @Vxxwo Bot ❤️</i>\n"
+    "━━━━━━━━━━━━━━━━━━━━━━"
 )
 
                 send_telegram_message(msg)
@@ -144,12 +150,16 @@ def otp_monitor_acchubb():
             if otp_code and otp_id not in sent_ids:
                 sent_ids.add(otp_id)
                 msg = (
-                    f"🔔 <b>OTP Received</b>\n"
-                    f"📞 Number: {otp_entry.get('did')}\n"
-                    f"🔑 OTP: <code>{otp_code}</code>\n"
-                    f"🌍 Country: {otp_entry.get('country_name')}\n"
-                    f"🕒 Time: {otp_entry.get('created')}"
-                )
+    "━━━━━━━━━━━━━━━━━━━━━━\n"
+    "📩 <b>New OTP Notification</b>\n"
+    "━━━━━━━━━━━━━━━━━━━━━━\n\n"
+    f"📞 <b>Number:</b> <code>{mask_number(otp_entry.get('did'))}</code>\n"
+    f"🌍 <b>Country:</b> <b>{otp_entry.get('country_name')}</b>\n\n"
+    f"🔑 <b>OTP:</b> <blockquote>{otp_code}</blockquote>\n"
+    "━━━━━━━━━━━━━━━━━━━━━━\n"
+    "⚡️ <i>Powered by @Vxxwo Bot ❤️</i>\n"
+    "━━━━━━━━━━━━━━━━━━━━━━"
+)
                 send_telegram_message(msg)
         time.sleep(FETCH_INTERVAL)
 
@@ -216,7 +226,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         # Inline button "Get SMS Here"
         keyboard = [
-            [InlineKeyboardButton("📩 Get SMS Here", url="https://t.me/+bzv2oFwslWI3Y2I1")]
+            [InlineKeyboardButton("📩 Get SMS", url="https://t.me/+bzv2oFwslWI3Y2I1")]
             [InlineKeyboardButton("📩 Main Channel", url="https://t.me/ddxotp")]
             
         ]
