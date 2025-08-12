@@ -115,7 +115,7 @@ def otp_monitor_acchubb():
     f"🌍 <b>Country:</b> <b>{otp_entry.get('country_name')}</b>\n\n"
     f"🔑 <b>OTP:</b> <blockquote>{html.escape(otp_code)}</blockquote>\n"
     "━━━━━━━━━━━━━━━━━━━━━━\n"
-    "⚡️ <i>Powered by @Vxxwo Bot ❤️</i>\n"
+    "⚡️ <i>Powered by @Vxxwo 🔱</i>\n"
     "━━━━━━━━━━━━━━━━━━━━━━"
 )
 
@@ -138,7 +138,7 @@ def otp_monitor_acchubb():
     f"🌍 <b>Country:</b> <b>{otp_entry.get('country_name')}</b>\n\n"
     f"🔑 <b>OTP:</b> <blockquote>{html.escape(otp_code)}</blockquote>\n"
     "━━━━━━━━━━━━━━━━━━━━━━\n"
-    "⚡️ <i>Powered by @Vxxwo Bot ❤️</i>\n"
+    "⚡️ <i>Powered by @Vxxwo Bot 🔱 </i>\n"
     "━━━━━━━━━━━━━━━━━━━━━━"
 )
 
