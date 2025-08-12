@@ -201,15 +201,15 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_text("🚚 Select a carrier:", reply_markup=InlineKeyboardMarkup(keyboard))
 
     elif action == "carrier":
-    app_id, carrier_id = value.split("|", 1)
-    res = add_number(app_id, carrier_id)
-    if res.get("meta") == 200 and "data" in res:
+      app_id, carrier_id = value.split("|", 1)
+      res = add_number(app_id, carrier_id)
+      if res.get("meta") == 200 and "data" in res:
         data = res["data"]
 
         msg = (
             f"✅ <b>Number Added Successfully!</b>\n\n"
             f"📞 <b>Number:</b> <code>{data.get('did')}</code>\n"
-            f"<i>Powered by V ❤️</i>"
+            f"<i>Powered by @vxxwo ❤️</i>"
         )
 
         # Inline button "Get SMS Here"
@@ -221,7 +221,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup = InlineKeyboardMarkup(keyboard)
 
         await query.edit_message_text(msg, parse_mode="HTML", reply_markup=reply_markup)
-    else:
+      else:
         await query.edit_message_text("❌ Failed to add number.\n" + str(res))
 # =========================================
 # ====== Main start functions ============
