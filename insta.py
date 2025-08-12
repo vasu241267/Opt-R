@@ -6,7 +6,7 @@ import os
 from flask import Flask, Response
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
-
+import html  
 # ====== CONFIG ======
 import os
 
