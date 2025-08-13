@@ -202,41 +202,95 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[InlineKeyboardButton(c["text"], callback_data=f"country|{c['id']}")] for c in countries]
     await update.message.reply_text("🌍 Select a country:", reply_markup=InlineKeyboardMarkup(keyboard))
 
+# Memory store for user preferences
+user_last_selection = {}
+COUNTRIES_PER_PAGE = 10
+
+def paginate_countries(page=0):
+    countries = get_countries()
+    start = page * COUNTRIES_PER_PAGE
+    end = start + COUNTRIES_PER_PAGE
+    buttons = [
+        [InlineKeyboardButton(c["text"], callback_data=f"country|{c['id']}")]
+        for c in countries[start:end]
+    ]
+    if end < len(countries):
+        buttons.append([InlineKeyboardButton("➡ More", callback_data=f"more_countries|{page+1}")])
+    return buttons
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    keyboard = paginate_countries(0)
+    await update.message.reply_text("🌍 Select a country:", reply_markup=InlineKeyboardMarkup(keyboard))
+
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    action, value = query.data.split("|", 1)
+    action, *values = query.data.split("|")
 
-    if action == "country":
-        carriers = get_carriers(value)
-        if not carriers:
-            await query.edit_message_text("❌ Carrier list nahi mili.")
+    if action == "more_countries":
+        page = int(values[0])
+        keyboard = paginate_countries(page)
+        await query.edit_message_text("🌍 Select a country:", reply_markup=InlineKeyboardMarkup(keyboard))
+
+    elif action == "country":
+        country_id = values[0]
+        carriers = get_carriers(country_id)
+
+        if not carriers:  # No carrier → try to directly allocate number
+            res = add_number(country_id, "")
+            if res.get("meta") == 200 and res.get("data"):
+                data = res["data"]
+                user_last_selection[query.from_user.id] = (country_id, "")
+                await send_number_message(query, data, country_id, "")
+            else:
+                await query.edit_message_text("❌ Numbers currently not available.")
             return
-        keyboard = [[InlineKeyboardButton(c["text"], callback_data=f"carrier|{value}|{c['id']}")] for c in carriers]
+
+        keyboard = [
+            [InlineKeyboardButton(c["text"], callback_data=f"carrier|{country_id}|{c['id']}")]
+            for c in carriers
+        ]
         await query.edit_message_text("🚚 Select a carrier:", reply_markup=InlineKeyboardMarkup(keyboard))
 
     elif action == "carrier":
-      app_id, carrier_id = value.split("|", 1)
-      res = add_number(app_id, carrier_id)
-      if res.get("meta") == 200 and "data" in res:
-        data = res["data"]
+        country_id, carrier_id = values
+        res = add_number(country_id, carrier_id)
+        if res.get("meta") == 200 and res.get("data"):
+            data = res["data"]
+            user_last_selection[query.from_user.id] = (country_id, carrier_id)
+            await send_number_message(query, data, country_id, carrier_id)
+        else:
+            await query.edit_message_text("❌ Numbers currently not available.")
 
-        msg = (
-            f"✅ <b>Number Added Successfully!</b>\n\n"
-            f"📞 <b>Number:</b> <code>{data.get('did')}</code>\n"
-            f"<i>Powered by @vxxwo ❤️</i>"
-        )
+    elif action == "change_number":
+        if query.from_user.id not in user_last_selection:
+            await query.edit_message_text("❌ First get a number.")
+            return
 
-        # Inline button "Get SMS Here"
-        keyboard = [
-    [
-        InlineKeyboardButton("📩 View OTP", url="https://t.me/+bzv2oFwslWI3Y2I1"),
-        InlineKeyboardButton("📩 Main Channel", url="https://t.me/ddxotp")
+        country_id, carrier_id = user_last_selection[query.from_user.id]
+        res = add_number(country_id, carrier_id)
+        if res.get("meta") == 200 and res.get("data"):
+            data = res["data"]
+            await send_number_message(query, data, country_id, carrier_id, changed=True)
+        else:
+            await query.edit_message_text("❌ Numbers currently not available.")
+
+async def send_number_message(query, data, country_id, carrier_id, changed=False):
+    msg = (
+        ("🔄 <b>Number Changed!</b>\n\n" if changed else "✅ <b>Number Added Successfully!</b>\n\n") +
+        f"📞 <b>Number:</b> <code>{data.get('did')}</code>\n"
+        f"<i>Devloped by @Vxxwo ❤️</i>"
+    )
+    keyboard = [
+        [
+            InlineKeyboardButton("📩 View OTP", url="https://t.me/+bzv2oFwslWI3Y2I1"),
+            InlineKeyboardButton("📢 Main Channel", url="https://t.me/ddxotp")
+        ],
+        [
+            InlineKeyboardButton("🔄 Change Number", callback_data="change_number")
+        ]
     ]
-]
-        await query.edit_message_text(msg, parse_mode="HTML", reply_markup=InlineKeyboardMarkup(keyboard))
-    else:
-        await query.edit_message_text("❌ Failed to add number.\n" + str(res))
+    await query.edit_message_text(msg, parse_mode="HTML", reply_markup=InlineKeyboardMarkup(keyboard))
 # =========================================
 # ====== Main start functions ============
 # =========================================
