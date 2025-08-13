@@ -13,9 +13,9 @@ last_change_time = {}
 # ====== CONFIG ======
 import os
 
-BOT_TOKEN = "8270301262:AAEldMmzcGK9sRbYk9WrFz6MqYE42EDnwlc"
-AUTH_TOKEN = "e225134d-ac59-42b0-ba3f-0c41f43ceb62"
-GROUP_ID = "-4967707436"
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+AUTH_TOKEN = os.getenv("AUTH_TOKEN")
+GROUP_ID = int(os.getenv("GROUP_ID", -1002311125652))
 API_URL = "https://raazit.acchub.io/api/"
 BASE_URL = "https://raazit.acchub.io/api/sms"
 FETCH_INTERVAL = 2  # seconds
