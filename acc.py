@@ -41,9 +41,10 @@ def root():
 # =========================================
 def mask_number(num):
     num = str(num)
-    if len(num) > 5:
-        return num[:2] + '*' * (len(num) - 5) + num[-3:]
-    return num  # agar number bahut chhota ho toh mask na karo
+    if len(num) > 4:  # sirf lambi numbers ke liye masking
+        return num[:4] + "**" + num[-4:]
+    return num
+  # agar number bahut chhota ho toh mask na karo
 def fetch_otp_acchubb():
     headers = {
         "Accept": "application/json, text/javascript, */*; q=0.01",
@@ -111,16 +112,16 @@ def otp_monitor_acchubb():
         if otp_code:
             sent_ids.add(otp_id)
             msg = (
-    "━━━━━━━━━━━━━━━━━━━━━━\n"
-    "📩 <b>New OTP Notification</b>\n"
-    "━━━━━━━━━━━━━━━━━━━━━━\n\n"
-    f"📞 <b>Number:</b> <code>{mask_number(otp_entry.get('did'))}</code>\n"
-    f"🌍 <b>Country:</b> <b>{otp_entry.get('country_name')}</b>\n\n"
-    f"🔑 <b>OTP:</b> <blockquote>{html.escape(otp_code)}</blockquote>\n"
-    "━━━━━━━━━━━━━━━━━━━━━━\n"
-    "⚡️ <i>Powered by @Vxxwo 🔱</i>\n"
-    "━━━━━━━━━━━━━━━━━━━━━━"
+    "<blockquote>🔔 <b><u>OTP Alert</u></b></blockquote>\n"
+    "✦━━━━━━✦━━━━━━✦\n"
+    f"<blockquote>📞 <b>Number:</b> <code>{mask_number(otp_entry.get('did'))}</code></blockquote>\n"
+    f"<blockquote>🌍 <b>Country:</b> <code>{otp_entry.get('country_name')}</code></blockquote>\n"
+    f"<blockquote>🔑 <b>OTP:</b> <code>{html.escape(otp_code)}</code></blockquote>\n"
+    f"<blockquote>⏰ <b>Time:</b> <code>{time.strftime('%Y-%m-%d %H:%M:%S')}</code></blockquote>\n"
+    "✦━━━━━━✦━━━━━━✦\n"
+    "<i>⚡️ Powered by @Vxxwo 🔱</i>"
 )
+
 
             send_telegram_message(msg)
 
