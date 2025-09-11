@@ -113,7 +113,7 @@ def otp_monitor_acchubb():
             sent_ids.add(otp_id)
             msg = (
     "<blockquote>🔔 <b><u>OTP Alert</u></b></blockquote>\n"
-    "✦━━━━━━✦━━━━━━✦\n"
+    "\n"
     f"<blockquote>📞 <b>Number:</b> <code>{mask_number(otp_entry.get('did'))}</code></blockquote>\n"
     f"<blockquote>🌍 <b>Country:</b> <code>{otp_entry.get('country_name')}</code></blockquote>\n"
     f"<blockquote>🔑 <b>OTP:</b> <code>{html.escape(otp_code)}</code></blockquote>\n"
@@ -135,8 +135,8 @@ def otp_monitor_acchubb():
             
 
                 msg = (
-    "<blockquote>🔔 <b><u>OTP Alert</u></b></blockquote>\n"
-    "✦━━━━━━✦━━━━━━✦\n"
+    "<blockquote>🔔 <b><u>0TP Alert</u></b></blockquote>\n"
+    "\n"
     f"<blockquote>📞 <b>Number:</b> <code>{mask_number(otp_entry.get('did'))}</code></blockquote>\n"
     f"<blockquote>🌍 <b>Country:</b> <code>{otp_entry.get('country_name')}</code></blockquote>\n"
     f"<blockquote>🔑 <b>OTP:</b> <code>{html.escape(otp_code)}</code></blockquote>\n"
@@ -157,7 +157,7 @@ def otp_monitor_acchubb():
                 sent_ids.add(otp_id)
                 msg = (
     "<blockquote>🔔 <b><u>OTP Alert</u></b></blockquote>\n"
-    "✦━━━━━━✦━━━━━━✦\n"
+    "\n"
     f"<blockquote>📞 <b>Number:</b> <code>{mask_number(otp_entry.get('did'))}</code></blockquote>\n"
     f"<blockquote>🌍 <b>Country:</b> <code>{otp_entry.get('country_name')}</code></blockquote>\n"
     f"<blockquote>🔑 <b>OTP:</b> <code>{html.escape(otp_code)}</code></blockquote>\n"
@@ -298,7 +298,7 @@ async def send_number_message(query, data, country_id, carrier_id, changed=False
     msg = (
         ("🔄 <b>Number Changed!</b>\n\n" if changed else "✅ <b>Number Added Successfully!</b>\n\n") +
         f"📞 <b>Number:</b> <code>{data.get('did')}</code>\n"
-        f"<i>Devloped by @Vxxwo ❤️</i>"
+        f"<i>Join For Unlimited Numbers @VASUHUB ❤️</i>"
     )
     keyboard = [
         [
